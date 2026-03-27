@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cacau Show - Chocolates Finos e Presentes</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <!-- Botão Voltar ao Topo -->
+    <button id="backToTop" class="back-to-top">
+        <i class="fas fa-arrow-up"></i> Voltar ao Topo
+    </button>
+
+    <!-- Header com Navegação -->
+    <header class="header">
+        <div class="container">
+            <div class="header-top">
+                <div class="logo">
+                    <h1>CACAU<span>SHOW</span></h1>
+                </div>
+                <nav class="nav-menu">
+                    <a href="#chocolate">Chocolate</a>
+                    <a href="#biscoito">Biscoito</a>
+                    <a href="#cestas">Cestas e Presentes</a>
+                    <a href="#pascoa">Páscoa</a>
+                    <a href="#lifestyle">Lifestyle</a>
+                </nav>
+                <div class="header-actions">
+                    <i class="fas fa-search"></i>
+                    <i class="fas fa-user"></i>
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CARROSSEL DE 4 BANNERS -->
+    <section class="carousel-section">
+        <div class="carousel-container">
+            <div class="carousel-track" id="carouselTrack">
+                <!-- BANNER 1 - ESPAÇO PARA SUA IMAGEM -->
+                <div class="carousel-slide">
+                    <img src="images/banner1.webp" alt="Banner Promocional 1" class="carousel-image">
+                    <div class="carousel-content">
+                        <span class="banner-tag">Oferta Especial</span>
+                        <h3>Leve 2 e ganhe<br>25% off na segunda unidade</h3>
+                        <div class="banner-price">
+                            <span class="price-old">R$ 84,99*</span>
+                            <span class="price-new">R$ 63,74</span>
+                        </div>
+                        <p class="banner-note">*Preço para não CacaLovers.</p>
+                        <button class="btn-banner">Aproveite!</button>
+                    </div>
+                </div>
+                <!-- BANNER 2 - ESPAÇO PARA SUA IMAGEM -->
+                <div class="carousel-slide">
+                    <img src="images/banner2.webp" alt="Banner Promocional 2" class="carousel-image">
+                    <div class="carousel-content">
+                        <span class="banner-tag">Páscoa</span>
+                        <h3>A maior Páscoa do Brasil.</h3>
+                        <button class="btn-banner">Confira</button>
+                    </div>
+                </div>
+                <!-- BANNER 3 - ESPAÇO PARA SUA IMAGEM (HARRY POTTER) -->
+                <div class="carousel-slide">
+                    <img src="images/banner3.webp" alt="Harry Potter" class="carousel-image">
+                    <div class="carousel-content">
+                        <span class="banner-tag">Harry Potter</span>
+                        <h3>Descubra sua casa de Hogwarts com o Chapéu Seletor.</h3>
+                        <p class="banner-subtitle">Garanta já o seu!</p>
+                        <button class="btn-banner">Comprar</button>
+                        <p class="banner-copyright">All characters and elements © & ™ Warner Bros. Entertainment Inc.</p>
+                    </div>
+                </div>
+                <!-- BANNER 4 - ESPAÇO PARA SUA IMAGEM -->
+                <div class="carousel-slide">
+                    <img src="images/banner4.webp" alt="Banner Promocional 4" class="carousel-image">
+                    <div class="carousel-content">
+                        <span class="banner-tag">CacaLovers</span>
+                        <h3>Acumule pontos<br>e ganhe prêmios</h3>
+                        <button class="btn-banner">Saiba mais</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Botões de Navegação -->
+            <button class="carousel-btn prev-btn" id="prevBtn">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-btn next-btn" id="nextBtn">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
+            <!-- Indicadores (dots) -->
+            <div class="carousel-dots" id="carouselDots"></div>
+        </div>
+    </section>
+
+    <!-- Seção Especial de Páscoa -->
+    <section class="pascoa-section" id="pascoa">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">🐣 Especial de Páscoa</h2>
+                <a href="#" class="view-all">Ver todos <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="products-grid">
+                <!-- PRODUTO 1 - ESPAÇO PARA IMAGEM -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="images/produto1.jpg" alt="Ovo laCreme" class="product-img">
+                    </div>
+                    <h3 class="product-title">1ª via de Páscoa la Creme ao Leite 348g</h3>
+                    <div class="product-price">
+                        <span class="price-current">R$ 89,99</span>
+                    </div>
+                    <button class="btn-add-cart" data-product="Ovo laCreme 348g" data-price="89.99">
+                        ADICIONAR AO CARRINHO
+                    </button>
+                </div>
+                <!-- PRODUTO 2 - ESPAÇO PARA IMAGEM -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="images/produto2.jpg" alt="Harry Potter" class="product-img">
+                    </div>
+                    <h3 class="product-title">2ª via de Páscoa ao Leite Pelúcia Chapéu Seletor Harry Potter 160g</h3>
+                    <div class="product-price">
+                        <span class="price-current">R$ 169,99</span>
+                    </div>
+                    <button class="btn-add-cart" data-product="Harry Potter 160g" data-price="169.99">
+                        ADICIONAR AO CARRINHO
+                    </button>
+                </div>
+                <!-- PRODUTO 3 - ESPAÇO PARA IMAGEM -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="images/produto3.jpg" alt="Animadinha LED" class="product-img">
+                    </div>
+                    <h3 class="product-title">3ª via de Páscoa ao Leite Pelúcia Animadinha com LED Ursinhos...</h3>
+                    <div class="product-price">
+                        <span class="price-current">R$ 139,99</span>
+                    </div>
+                    <button class="btn-add-cart" data-product="Animadinha LED 139g" data-price="139.99">
+                        ADICIONAR AO CARRINHO
+                    </button>
+                </div>
+                <!-- PRODUTO 4 - ESPAÇO PARA IMAGEM -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="images/produto4.jpg" alt="Zangadinho LED" class="product-img">
+                    </div>
+                    <h3 class="product-title">4ª via de Páscoa ao Leite Pelúcia Zangadinho com LED Ursinhos...</h3>
+                    <div class="product-price">
+                        <span class="price-current">R$ 139,99</span>
+                    </div>
+                    <button class="btn-add-cart" data-product="Zangadinho LED 139g" data-price="139.99">
+                        ADICIONAR AO CARRINHO
+                    </button>
+                </div>
+            </div>
+            <p class="disclaimer">Desconto não cumulativo com benefícios CacaLovers. Consulte o regulamento no site.</p>
+        </div>
+    </section>
+
+    <!-- Seção Sobre a Cacau Show / Nossa Fazenda -->
+    <section class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>Sobre a Cacau Show</h2>
+                    <h3>Nossa Fazenda</h3>
+                    <p>Da plantação à sua mesa, cuidamos de cada etapa para oferecer chocolates de qualidade excepcional. Nossa fazenda produz cacau de origem sustentável, garantindo sabor e responsabilidade social.</p>
+                    <button class="btn-primary">Conheça nossa história</button>
+                </div>
+                <div class="about-image">
+                    <img src="https://placehold.co/500x400/5a3e2a/f5e5d5?text=Fazenda+Cacau" alt="Fazenda Cacau Show">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rodapé EXATAMENTE como na imagem -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>INSTITUCIONAL</h4>
+                    <ul>
+                        <li><a href="#">Seja um Revendedor</a></li>
+                        <li><a href="#">Seja um Franqueado</a></li>
+                        <li><a href="#">Área para Empresas</a></li>
+                        <li><a href="#">Trabalhe Conosco</a></li>
+                        <li><a href="#">Língua de Gato</a></li>
+                        <li><a href="#">Nossas Marcas</a></li>
+                        <li><a href="#">Linha Cacao Home</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>POLÍTICAS</h4>
+                    <ul>
+                        <li><a href="#">Termos de Uso</a></li>
+                        <li><a href="#">Política de Privacidade</a></li>
+                        <li><a href="#">Política de Trocas</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Regulamentos</a></li>
+                        <li><a href="#">SAC</a></li>
+                        <li><a href="#">Comunicado Oficial Cacau Show</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col footer-info">
+                    <p>Preços apresentados na loja virtual podem variar de acordo com a região. Informações sobre preços, prazos de validade, estoque e origem podem ser obtidas diretamente nas lojas. Consulte a loja para verificar disponibilidade.</p>
+                    <p>Preços, estoques, informações e condições disponíveis no site estão sujeitos a alterações sem aviso prévio. *Preços e produtos do Choco-Outlet são válidos somente para compras realizadas na loja virtual sujeito a disponibilidade de estoque.*</p>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                <p>© Copyright 2023. Todos os direitos reservados. | Cacau Comércio Eletrônico LTDA 32.143.933/0002-05 | Endereço: Avenida Helio Ossamu Daikaura, 1445 Bairro Jardim Vista Alegre Município Embu das Artes - SP CEP: 06807-000</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
